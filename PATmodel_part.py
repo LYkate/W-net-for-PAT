@@ -3,8 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 class DoubleConv(nn.Module):
-    """(convolution => [BN] => ReLU) * 2"""
-
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.double_conv = nn.Sequential(
@@ -18,10 +16,8 @@ class DoubleConv(nn.Module):
 
     def forward(self, x):
         return self.double_conv(x)
-#池化
+        
 class Down(nn.Module):
-    """Downscaling with maxpool then double conv"""
-
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
@@ -31,10 +27,8 @@ class Down(nn.Module):
 
     def forward(self, x):
         return self.maxpool_conv(x)
-#上采样
-class Up1(nn.Module):
-    """Upscaling then double conv"""
 
+class Up1(nn.Module):
     def __init__(self, in_channels, out_channels, bilinear=False):
         super().__init__()
 
@@ -56,8 +50,6 @@ class Up1(nn.Module):
         return self.conv(x)
 
 class Up2(nn.Module):
-    """Upscaling then double conv"""
-
     def __init__(self, in_channels, out_channels, bilinear=False):
         super().__init__()
 
@@ -92,20 +84,7 @@ class Skipconnet(nn.Module):
     def forward(self, x):
         return self.conv(x)
 
-#class singleUpsampling(nn.Module):
-#    def __init__(self, in_channels, out_channels, bilinear=False):
-#        super(singleUpsampling, self).__init__()
-#        if bilinear:
-#            self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
-#        else:
-#            self.up = nn.ConvTranspose2d(in_channels, out_channels, kernel_size=2, stride=2)
-
-#    def forward(self, x):
-#        return self.up(x)
-
 class SingleConv(nn.Module):
-    """(convolution => [BN] => ReLU) * 2"""
-
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.conv = nn.Sequential(
