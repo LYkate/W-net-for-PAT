@@ -2,12 +2,8 @@ from PATmodel import *
 from data import *
 from tensorboardX import SummaryWriter
 import torch.optim.lr_scheduler as lr_scheduler
-#from early_stopping import EarlyStopping
 
 data = SummaryWriter()
-
-#save_path = ".\\"
-#early_stopping = EarlyStopping(save_path=save_path)
 
 def train_net(net, device, train_input_root,train_lable_root, epoch=150, batch_size=20, lr=0.0001):
     # 加载训练集
@@ -57,22 +53,8 @@ def train_net(net, device, train_input_root,train_lable_root, epoch=150, batch_s
             data.add_scalar('Loss_Train',loss,step)
         scheduler.step()
 
-        #net.eval()
-        #for signal, label in test_loader:
-        #    signal = signal.to(device=device, dtype=torch.float32)
-        #    label = label.to(device=device, dtype=torch.float32)
-        #    out = net(signal)
-        #    test_loss = criterion(out, label)
-        #val_loss = test_loss.item()
-        #data.add_scalar('Loss_Test',test_loss,epoch)
-        #early_stopping(val_loss, net)
-        #if early_stopping.early_stop:
-        #    print("Early stopping")
-        #    break
-
-
 #输入与标签图片所在的目录
-train_input_root = 'database/input2'
+train_input_root = 'database/input'
 train_lable_root = 'database/label'
 
 if __name__ == "__main__":
