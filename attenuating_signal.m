@@ -125,8 +125,3 @@ for i=1:305
     clear qa
     clear q
 end
-        clear qa
-        clear t
-    end
-end
-%}
