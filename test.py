@@ -31,8 +31,8 @@ if __name__ == "__main__":
         save_res_path = test_path.split('.')[0] + '_res.png'
         # 读取信号数据
         input_ex=pd.read_excel(test_path, header=None)
+        # 转为tensor
         input_signal = torch.tensor(input_ex.values)
-        #input_signal = torch.unsqueeze(input_signal, 0)
         # 转为batch为1，通道为1，大小为64*640的数组
         input_tensor = torch.reshape(input_signal, (1, 1, 64, 640))
         # 将tensor拷贝到device中，只用cpu就是拷贝到cpu中，用cuda就是拷贝到cuda中。
