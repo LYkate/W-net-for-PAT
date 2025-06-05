@@ -1,4 +1,4 @@
-for i=1:305
+for i=1:305   %遍历目标图像
     M=imread(i+".png");
     M=mat2gray(M);
     str11="label\"+i+"-1.jpg";
@@ -25,10 +25,11 @@ for i=1:305
 
     kgrid.makeTime(medium.sound_speed);
     kgrid.Nt=640;  %设置时间节点数
+    s=64; %设置探测器数目
         
     p0=M;
     source.p0=p0;
-    sensor.mask=makeCartCircle(0.44e-2,64); %探测器
+    sensor.mask=makeCartCircle(0.44e-2,s); %探测器
     p=kspaceFirstOrder2D(kgrid,medium,source,sensor,'DataCast','gpuArray-double');
     
 %一致衰减
@@ -37,26 +38,26 @@ for i=1:305
     kk=0.45;
     A=diag(exp(-kk*t));
 
-    q=zeros(64,640);
-    for i=1:64
+    q=zeros(s,640);
+    for i=1:s
         for j=1:640
             q(i,j)=sum(p(i,1:j))*ht;
         end
     end
-    qa=zeros(64,640);
-    for j=1:64
+    qa=zeros(s,640);
+    for j=1:s
         qa(j,:)=(A*q(j,:)')';
     end
-    pa=zeros(64,640);
+    pa=zeros(s,640);
     pa(:,1)=qa(:,1)/ht;
-    for i=1:64
+    for i=1:s
         X=diff(qa(i,:));
         pa(i,2:640)=X/ht;
     end
     writematrix(pa,str21); %存储光声信号
-    x=addNoise(p,20,'peak'); %添加噪声
-    y=addNoise(p,25,'peak');
-    z=addNoise(p,30,'peak');
+    x=addNoise(pa,20,'peak'); %添加噪声
+    y=addNoise(pa,25,'peak');
+    z=addNoise(pa,30,'peak');
     writematrix(x,str22);
     writematrix(y,str23);
     writematrix(z,str24);
@@ -90,38 +91,29 @@ for i=1:305
 
     A=diag(exp(-kk*t));
 
-    q=zeros(64,640);
-    for i=1:64
+    q=zeros(s,640);
+    for i=1:s
         for j=1:640
             q(i,j)=sum(p(i,1:j))*ht;
         end
     end
-    qa=zeros(64,640);
-    for j=1:64
+    qa=zeros(s,640);
+    for j=1:s
         qa(j,:)=((A+B)*q(j,:)')';
     end
 
-    pa=zeros(64,640);
+    pa=zeros(s,640);
     pa(:,1)=qa(:,1)/ht;
-    for i=1:64
+    for i=1:s
         X=diff(qa(i,:));
         pa(i,2:640)=X/ht;
     end
     writematrix(pa,str21);
-    x=addNoise(p,20,'peak');
-    y=addNoise(p,25,'peak');
-    z=addNoise(p,30,'peak');
+    x=addNoise(pa,20,'peak');
+    y=addNoise(pa,25,'peak');
+    z=addNoise(pa,30,'peak');
     writematrix(x,str22);
     writematrix(y,str23);
     writematrix(z,str24);
 %}
-
-    clear p
-    clear kgrid
-    clear sensor
-    clear medium
-    clear source
-    clear pa
-    clear qa
-    clear q
 end
